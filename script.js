@@ -3,13 +3,9 @@ const messagesDiv = document.getElementById('messages');
 const userNameInput = document.getElementById('userName');
 const userMessageInput = document.getElementById('userMessage');
 
-// ✅ Ensure only one WebSocket connection
-if (!window.socket) {
-    window.socket = new WebSocket('wss://temp-chat-sfww.onrender.com');
-}
-const socket = window.socket;
+let socket = new WebSocket('wss://temp-chat-sfww.onrender.com'); // Use "wss://" for secure WebSocket
 
-// ✅ Fix Blob issue - Convert to text before parsing JSON
+// Handle incoming messages
 socket.onmessage = async function(event) {
     let data = event.data;
 
@@ -42,7 +38,17 @@ socket.onmessage = async function(event) {
     }
 };
 
-// ✅ Fix duplicate WebSocket errors
+// ✅ Ensure the WebSocket is open before sending messages
+function sendMessage(message) {
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(message);
+    } else {
+        console.warn("WebSocket is not open. Retrying in 1 second...");
+        setTimeout(() => sendMessage(message), 1000);
+    }
+}
+
+// Handle connection events
 socket.onopen = () => console.log("Connected to WebSocket server.");
 socket.onclose = () => console.log("Disconnected from WebSocket server.");
 socket.onerror = (error) => console.error("WebSocket Error:", error);
@@ -55,7 +61,7 @@ userNameInput.addEventListener('change', function() {
     localStorage.setItem('userName', userName);
 });
 
-// ✅ Fix: Prevent empty messages
+// ✅ Prevent empty messages & ensure WebSocket is open
 messageForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -64,8 +70,9 @@ messageForm.addEventListener('submit', function(event) {
 
     const nameToUse = userName || userNameInput.value; // Use stored or input name
 
-    // Send message to WebSocket server
-    socket.send(JSON.stringify({ name: nameToUse, message: userMessage }));
+    const messageData = JSON.stringify({ name: nameToUse, message: userMessage });
+
+    sendMessage(messageData); // ✅ Send message only when WebSocket is ready
 
     // Clear input field
     userMessageInput.value = '';
