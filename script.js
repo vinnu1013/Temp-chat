@@ -1,5 +1,7 @@
 const messageForm = document.getElementById('messageForm');
-const socket = new WebSocket('ws://localhost:8080'); // Connect to WebSocket server
+ // Connect to WebSocket server
+const socket = new WebSocket('wss://temp-chat-sfww.onrender.com'); 
+
 
 socket.onmessage = function(event) {
     const messageData = JSON.parse(event.data);
