@@ -13,11 +13,14 @@ socket.onmessage = function(event) {
     messagesDiv.appendChild(messageElement);
 };
 
-let userName = '';
+let userName = localStorage.getItem('userName') || ''; // Retrieve user name from local storage
+
 const userNameInput = document.getElementById('userName');
 
 userNameInput.addEventListener('change', function() {
     userName = userNameInput.value;
+    localStorage.setItem('userName', userName); // Store user name in local storage
+
 });
 
 const userMessageInput = document.getElementById('userMessage');
