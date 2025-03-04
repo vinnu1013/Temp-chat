@@ -3,16 +3,18 @@ const messagesDiv = document.getElementById('messages');
 const userNameInput = document.getElementById('userName');
 const userMessageInput = document.getElementById('userMessage');
 
-// Connect to WebSocket server
-const socket = new WebSocket('wss://temp-chat-sfww.onrender.com');
+// ✅ Ensure only one WebSocket connection
+if (!window.socket) {
+    window.socket = new WebSocket('wss://temp-chat-sfww.onrender.com');
+}
+const socket = window.socket;
 
-// Handle incoming messages
+// ✅ Fix Blob issue - Convert to text before parsing JSON
 socket.onmessage = async function(event) {
     let data = event.data;
 
-    // Convert Blob to JSON text if necessary
     if (data instanceof Blob) {
-        data = await data.text();
+        data = await data.text(); // Convert Blob to text
     }
 
     try {
@@ -40,6 +42,11 @@ socket.onmessage = async function(event) {
     }
 };
 
+// ✅ Fix duplicate WebSocket errors
+socket.onopen = () => console.log("Connected to WebSocket server.");
+socket.onclose = () => console.log("Disconnected from WebSocket server.");
+socket.onerror = (error) => console.error("WebSocket Error:", error);
+
 // Retrieve user name from local storage
 let userName = localStorage.getItem('userName') || '';
 
@@ -48,7 +55,7 @@ userNameInput.addEventListener('change', function() {
     localStorage.setItem('userName', userName);
 });
 
-// Handle message submission
+// ✅ Fix: Prevent empty messages
 messageForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
