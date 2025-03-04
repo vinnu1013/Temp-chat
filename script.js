@@ -1,47 +1,65 @@
 const messageForm = document.getElementById('messageForm');
- // Connect to WebSocket server
-const socket = new WebSocket('wss://temp-chat-sfww.onrender.com'); 
+const messagesDiv = document.getElementById('messages');
+const userNameInput = document.getElementById('userName');
+const userMessageInput = document.getElementById('userMessage');
 
+// Connect to WebSocket server
+const socket = new WebSocket('wss://temp-chat-sfww.onrender.com');
 
-socket.onmessage = function(event) {
-    const messageData = JSON.parse(event.data);
-    const messageElement = document.createElement('div');
-    const nameElement = document.createElement('div');
-    nameElement.textContent = messageData.name;
-    nameElement.style.color = 'red'; // Set name color to red
-    messageElement.appendChild(nameElement);
-    messageElement.appendChild(document.createTextNode(messageData.message));
-    
-    messagesDiv.appendChild(messageElement);
+// Handle incoming messages
+socket.onmessage = async function(event) {
+    let data = event.data;
+
+    // Convert Blob to JSON text if necessary
+    if (data instanceof Blob) {
+        data = await data.text();
+    }
+
+    try {
+        const messageData = JSON.parse(data);
+        console.log("Received:", messageData);
+
+        // Create message container
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+
+        // Create name element
+        const nameElement = document.createElement('strong');
+        nameElement.textContent = messageData.name + ": ";
+        nameElement.style.color = 'red';
+
+        // Append name and message
+        messageElement.appendChild(nameElement);
+        messageElement.appendChild(document.createTextNode(messageData.message));
+        messagesDiv.appendChild(messageElement);
+
+        // Auto-scroll to latest message
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    } catch (error) {
+        console.error("Invalid JSON received:", data);
+    }
 };
 
-let userName = localStorage.getItem('userName') || ''; // Retrieve user name from local storage
-
-const userNameInput = document.getElementById('userName');
+// Retrieve user name from local storage
+let userName = localStorage.getItem('userName') || '';
 
 userNameInput.addEventListener('change', function() {
     userName = userNameInput.value;
-    localStorage.setItem('userName', userName); // Store user name in local storage
-
+    localStorage.setItem('userName', userName);
 });
 
-const userMessageInput = document.getElementById('userMessage');
-const messagesDiv = document.getElementById('messages');
-
+// Handle message submission
 messageForm.addEventListener('submit', function(event) {
     event.preventDefault();
-    
-    const userMessage = userMessageInput.value;
-    const nameToUse = userName || userNameInput.value; // Use stored name or input name
+
+    const userMessage = userMessageInput.value.trim();
+    if (!userMessage) return; // Prevent sending empty messages
+
+    const nameToUse = userName || userNameInput.value; // Use stored or input name
 
     // Send message to WebSocket server
     socket.send(JSON.stringify({ name: nameToUse, message: userMessage }));
 
-
-    // Remove local message creation logic
-
-    
+    // Clear input field
     userMessageInput.value = '';
-    
-
 });
