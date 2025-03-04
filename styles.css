@@ -46,3 +46,7 @@ button:hover {
 #messages {
     margin-top: 20px;
 }
+
+.message {
+    margin-bottom: 5px; /* Add some space between messages */
+}
