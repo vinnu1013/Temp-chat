@@ -33,14 +33,8 @@ messageForm.addEventListener('submit', function(event) {
     socket.send(JSON.stringify({ name: nameToUse, message: userMessage }));
 
 
-    const messageElement = document.createElement('div');
-    const nameElement = document.createElement('div');
-    nameElement.textContent = nameToUse;
-    nameElement.style.color = 'red'; // Set name color to red
-    messageElement.appendChild(nameElement);
-    messageElement.appendChild(document.createTextNode(userMessage));
+    // Remove local message creation logic
 
-    messagesDiv.appendChild(messageElement);
     
     userMessageInput.value = '';
     
