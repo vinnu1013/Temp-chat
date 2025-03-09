@@ -1,10 +1,17 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: white;
     margin: 0;
     padding: 20px;
 }
-
+.footer {
+    display: inline;
+   padding: 20px;
+}
+a{
+    text-decoration: none;
+    color: rgb(90, 94, 220);
+}
 .container {
     max-width: 600px;
     margin: auto;
@@ -12,6 +19,10 @@ body {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h5{
+    text-align: center;
+    color: #75c475;
 }
 
 h1 {
@@ -49,4 +60,60 @@ button:hover {
 
 .message {
     margin-bottom: 5px; /* Add some space between messages */
+}
+.footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Table styling */
+.footer table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Table row styling */
+.footer tr {
+    display: flex;
+    justify-content: space-around; /* Equal space between elements */
+    width: 100%;
+}
+
+/* Table data (td) styling */
+.footer td {
+    padding: 10px;
+    text-align: center;
+    flex: 1; /* Equal width for all items */
+}
+
+/* Links inside footer */
+.footer a {
+    color: white;
+    text-decoration: none;
+}
+
+#messages {
+    margin-top: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+    visibility: hidden; /* ✅ Hide initially */
+    border: none; /* ✅ No border when empty */
+}
+
+.message {
+    background-color: #f1f1f1;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
 }
