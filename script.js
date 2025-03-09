@@ -3,7 +3,7 @@ const messagesDiv = document.getElementById('messages');
 const userNameInput = document.getElementById('userName');
 const userMessageInput = document.getElementById('userMessage');
 
-let socket = new WebSocket('ws://localhost:10000');
+let socket = new WebSocket('wss://temp-chat-sfww.onrender.com');
 
 let messagesArray = JSON.parse(localStorage.getItem("chatMessages")) || [];
 
