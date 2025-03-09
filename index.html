@@ -4,30 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Temp_Chat</title>
-    <link rel="icon" href="Suite.jpeg.jpg" type="image/icon type">
+    <title>Temp_CHAT</title>
 </head>
 <body>
     <div class="container">
-        <h1>Fun-Forget</h1>
+        <h1>FUN-FORGET</h1>
+        <h5>Chats are temporary and Visible to all the active Server users</h5>
         <form id="messageForm">
             <input type="text" id="userName" placeholder="Enter your name" required>
             <input type="text" id="userMessage" placeholder="Enter your message" required>
+            <div id="messages"></div>
+            <br>
+            <!-- <div>
+              <input type="text" id="userName" placeholder="Join Room">
+              <button type="submit">Join</button>
+                    <input type="text" id="userMessage" placeholder="Create Room ">
+                    <button type="submit">Create</button>
+            </div> -->
+         
             <button type="submit">Send</button>
         </form>
-        <div id="messages"></div>
     </div>
-    <div id='Create_Room'>
-        <input type='text' id="roomID" placeholder="Enter New Room Code">
-        <button type=''submit> Create Room </button>
-    </div>
-    <div>
-         <input type='text' id="roomID" placeholder="Enter New Room Code">
-        <button type=''submit> Enter Room </button>
-    </div>
-    
-    <!-- ✅ Load script.js (It already contains WebSocket connection) -->
+     <!-- <footer class="footer">
+      <table>
+        <tr>
+          <td><p >Created by: <a href="https://vinnu1013.github.io/Portfolio/">Thappetla Vinay Kumar</a></p></td>
+          <td><p> Github: <a href="https://github.com/vinnu1013/">vinnu1013</a></p></td>
+          <td><p> Mail id: <a href="mailto:mr.vinnu10@gmail.com">mr.vinnu10@gmail.com</a></p></td>
+          <td><p> Contact: <a href="tel:+9059236500">9059236500</a></p></td>
+        </tr>
+      </table>
+     </footer> -->
     <script src="script.js"></script>
-
 </body>
 </html>
