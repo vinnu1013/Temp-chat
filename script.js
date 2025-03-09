@@ -3,9 +3,12 @@ const messagesDiv = document.getElementById('messages');
 const userNameInput = document.getElementById('userName');
 const userMessageInput = document.getElementById('userMessage');
 
-let socket = new WebSocket('wss://temp-chat-sfww.onrender.com');
+let socket = new WebSocket('ws://localhost:10000');
 
 let messagesArray = JSON.parse(localStorage.getItem("chatMessages")) || [];
+
+// ✅ Get current user's name
+let currentUserName = localStorage.getItem('userName') || "";
 
 // ✅ Load stored messages on page load
 function updateMessagesUI() {
@@ -25,7 +28,13 @@ function updateMessagesUI() {
 
         const nameElement = document.createElement('strong');
         nameElement.textContent = msg.name + ": ";
-        nameElement.style.color = 'red';
+
+        // ✅ If the sender's name is different from the current user's name, change the color
+        if (msg.name === currentUserName) {
+            nameElement.style.color = 'blue'; // Your messages in blue
+        } else {
+            nameElement.style.color = 'red'; // Other users' messages in red
+        }
 
         messageElement.appendChild(nameElement);
         messageElement.appendChild(document.createTextNode(msg.message));
@@ -37,7 +46,8 @@ function updateMessagesUI() {
 
 // ✅ Correctly store the user's name
 userNameInput.addEventListener('change', function () {
-    localStorage.setItem('userName', userNameInput.value);
+    currentUserName = userNameInput.value;
+    localStorage.setItem('userName', currentUserName);
 });
 
 // ✅ Handle incoming messages
