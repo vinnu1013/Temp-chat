@@ -3,77 +3,81 @@ const messagesDiv = document.getElementById('messages');
 const userNameInput = document.getElementById('userName');
 const userMessageInput = document.getElementById('userMessage');
 
-let socket = new WebSocket('wss://temp-chat-sfww.onrender.com'); // Use "wss://" for secure WebSocket
+let socket = new WebSocket('ws://localhost:10000');
 
-// Handle incoming messages
+let messagesArray = JSON.parse(localStorage.getItem("chatMessages")) || [];
+
+// ✅ Load stored messages on page load
+function updateMessagesUI() {
+    messagesDiv.innerHTML = "";
+
+    if (messagesArray.length === 0) {
+        messagesDiv.style.visibility = "hidden"; 
+        messagesDiv.style.border = "none";
+    } else {
+        messagesDiv.style.visibility = "visible"; 
+        messagesDiv.style.border = "1px solid #ccc";
+    }
+
+    messagesArray.forEach(msg => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+
+        const nameElement = document.createElement('strong');
+        nameElement.textContent = msg.name + ": ";
+        nameElement.style.color = 'red';
+
+        messageElement.appendChild(nameElement);
+        messageElement.appendChild(document.createTextNode(msg.message));
+        messagesDiv.appendChild(messageElement);
+    });
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight; 
+}
+
+// ✅ Correctly store the user's name
+userNameInput.addEventListener('change', function () {
+    localStorage.setItem('userName', userNameInput.value);
+});
+
+// ✅ Handle incoming messages
 socket.onmessage = async function(event) {
     let data = event.data;
 
     if (data instanceof Blob) {
-        data = await data.text(); // Convert Blob to text
+        data = await data.text();
     }
 
     try {
         const messageData = JSON.parse(data);
         console.log("Received:", messageData);
 
-        // Create message container
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
+        messagesArray.push(messageData);
 
-        // Create name element
-        const nameElement = document.createElement('strong');
-        nameElement.textContent = messageData.name + ": ";
-        nameElement.style.color = 'red';
+        if (messagesArray.length > 20) {
+            messagesArray.shift(); 
+        }
 
-        // Append name and message
-        messageElement.appendChild(nameElement);
-        messageElement.appendChild(document.createTextNode(messageData.message));
-        messagesDiv.appendChild(messageElement);
+        localStorage.setItem("chatMessages", JSON.stringify(messagesArray));
 
-        // Auto-scroll to latest message
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        updateMessagesUI();
     } catch (error) {
         console.error("Invalid JSON received:", data);
     }
 };
 
-// ✅ Ensure the WebSocket is open before sending messages
-function sendMessage(message) {
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(message);
-    } else {
-        console.warn("WebSocket is not open. Retrying in 1 second...");
-        setTimeout(() => sendMessage(message), 1000);
-    }
-}
-
-// Handle connection events
-socket.onopen = () => console.log("Connected to WebSocket server.");
-socket.onclose = () => console.log("Disconnected from WebSocket server.");
-socket.onerror = (error) => console.error("WebSocket Error:", error);
-
-// Retrieve user name from local storage
-let userName = localStorage.getItem('userName') || '';
-
-userNameInput.addEventListener('change', function() {
-    userName = userNameInput.value;
-    localStorage.setItem('userName', userName);
-});
-
-// ✅ Prevent empty messages & ensure WebSocket is open
+// ✅ Send messages with correct user name
 messageForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
     const userMessage = userMessageInput.value.trim();
-    if (!userMessage) return; // Prevent sending empty messages
+    if (!userMessage) return;
 
-    const nameToUse = userName || userNameInput.value; // Use stored or input name
+    // ✅ Get the correct name
+    let userName = userNameInput.value.trim() || localStorage.getItem('userName') || "Anonymous";
 
-    const messageData = JSON.stringify({ name: nameToUse, message: userMessage });
+    const messageData = JSON.stringify({ name: userName, message: userMessage });
 
-    sendMessage(messageData); // ✅ Send message only when WebSocket is ready
-
-    // Clear input field
+    socket.send(messageData);
     userMessageInput.value = '';
 });
