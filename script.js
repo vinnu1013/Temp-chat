@@ -31,7 +31,7 @@ function updateMessagesUI() {
 
         // ✅ If the sender's name is different from the current user's name, change the color
         if (msg.name === currentUserName) {
-            nameElement.style.color = 'Green'; // Your messages in blue
+            nameElement.style.color = 'green'; // Your messages in blue
         } else {
             nameElement.style.color = 'red'; // Other users' messages in red
         }
