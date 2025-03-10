@@ -4,21 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Messaging App</title>
+    <title>Temp_CHAT</title>
 </head>
 <body>
     <div class="container">
-        <h1>Messaging App</h1>
-        <form id="messageForm">
-            <input type="text" id="userName" placeholder="Enter your name" required>
-            <input type="text" id="userMessage" placeholder="Enter your message" required>
-            <button type="submit">Send</button>
-        </form>
-        <div id="messages"></div>
-    </div>
-    
-    <!-- ✅ Load script.js (It already contains WebSocket connection) -->
-    <script src="script.js"></script>
+        <h1>FUN-FORGET</h1>
+        <h5>All chats are Temporary</h5>
 
+        <!-- Room Creation & Joining -->
+        <div id="roomControls">
+            <input type="text" id="roomCode" placeholder="Enter 4-6 digit Room Code">
+            <button id="createRoom">Create Room</button>
+            <button id="joinRoom">Join Room</button>
+            <button id="exitRoom" style="display: none;">Exit Room</button>
+        </div>
+
+        <!-- Chat Section -->
+        <div id="chatBox">
+            <form id="messageForm">
+                <input type="text" id="userName" placeholder="Enter your name" required autocomplete="off">
+                <input type="text" id="userMessage" placeholder="Enter your message" required autocomplete="off">
+                <div id="messages"></div>
+                <button type="submit">Send</button>
+            </form>
+            
+        </div>
+    </div>
+
+    <!-- Load the JavaScript file -->
+    <script src="script.js"></script>
 </body>
 </html>

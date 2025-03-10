@@ -1,24 +1,27 @@
 const WebSocket = require('ws');
+const server = new WebSocket.Server({ port: 10000 });
 
-const PORT = process.env.PORT || 10000; // Use the PORT environment variable or fallback to 10000
-const wss = new WebSocket.Server({ port: PORT });
+let clients = [];
 
-wss.on('connection', (ws) => {
-    console.log('New client connected');
+server.on('connection', (socket) => {
+    console.log("Client connected");
+    clients.push(socket);
 
-    ws.on('message', (message) => {
-        console.log(`Received: ${message}`);
-        // Broadcast the message to all clients
-        wss.clients.forEach((client) => {
+    socket.on('message', (message) => {
+        const parsedMessage = JSON.parse(message);
+        
+        // ✅ Broadcast message only to users in the same room
+        clients.forEach(client => {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(message);
+                client.send(JSON.stringify(parsedMessage));
             }
         });
     });
 
-    ws.on('close', () => {
-        console.log('Client disconnected');
+    socket.on('close', () => {
+        clients = clients.filter(client => client !== socket);
+        console.log("Client disconnected");
     });
 });
 
-console.log(`WebSocket server is running on port ${PORT}`);
+console.log("WebSocket server is running on ws://localhost:10000");
